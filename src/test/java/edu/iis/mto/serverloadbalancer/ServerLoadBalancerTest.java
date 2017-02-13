@@ -23,7 +23,33 @@ public class ServerLoadBalancerTest {
 		assertThat(theServer, CurrentLoadPercentage.hasCurrentLoadOf(0.0d));
 	}
 
-	
+	@Test
+	public void balancingOneServerWithOneSlotCapacity_andOneSlotVm_fillsServerWithOneVm(){
+		
+		Server theServer = a(ServerBuilder.server().withCapacity(1));
+		
+		Vm theVm = a(vm().withSize(1));
+		balancing(aServerListWith(theServer), aVmListWith(theVm));
+		
+		assertThat(theServer, CurrentLoadPercentage.hasCurrentLoadOf(100.0d));
+		assertThat("server should contain the vm", theServer.contains(theVm));
+		
+	}
+	private Vm a(VmBuilder builder) {
+		// TODO Auto-generated method stub
+		return builder.build();
+	}
+
+	private VmBuilder vm() {
+		// TODO Auto-generated method stub
+		return new VmBuilder();
+	}
+
+	private Vm[] aVmListWith(Vm... vms) {
+		// TODO Auto-generated method stub
+		return vms;
+	}
+
 	private void balancing(Server[] servers, Vm[] vms) {
 		// TODO Auto-generated method stub
 		new ServerLoadBalancer().balance(servers, vms);
