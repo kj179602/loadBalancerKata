@@ -28,47 +28,37 @@ public class ServerLoadBalancerTest {
 		
 		Server theServer = a(ServerBuilder.server().withCapacity(1));
 		
-		Vm theVm = a(vm().withSize(1));
+		Vm theVm = a(VmBuilder.vm().withSize(1));
 		balancing(aServerListWith(theServer), aVmListWith(theVm));
 		
 		assertThat(theServer, CurrentLoadPercentage.hasCurrentLoadOf(100.0d));
 		assertThat("server should contain the vm", theServer.contains(theVm));
 		
 	}
-	private Vm a(VmBuilder builder) {
-		// TODO Auto-generated method stub
-		return builder.build();
-	}
-
-	private VmBuilder vm() {
-		// TODO Auto-generated method stub
-		return new VmBuilder();
-	}
 
 	private Vm[] aVmListWith(Vm... vms) {
-		// TODO Auto-generated method stub
 		return vms;
 	}
-
+	
+	private Server [] aServerListWith(Server... servers) {
+		return servers;
+	}
+	
 	private void balancing(Server[] servers, Vm[] vms) {
-		// TODO Auto-generated method stub
 		new ServerLoadBalancer().balance(servers, vms);
 	}
 
 	private Vm [] anEmptyListOfVms() {
-		// TODO Auto-generated method stub
 		return new Vm[0];
 	}
-
-	private Server a(ServerBuilder builder) {
-		// TODO Auto-generated method stub
+	
+	private <T> T a(Builder<T> builder){
 		return builder.build();
+		
 	}
 
-	private Server [] aServerListWith(Server... servers) {
-		// TODO Auto-generated method stub
-		return servers;
-	}
+
+
 
 
 	
