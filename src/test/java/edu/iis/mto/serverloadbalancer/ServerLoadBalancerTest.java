@@ -32,7 +32,7 @@ public class ServerLoadBalancerTest {
 		balance(aListOfServersWith(theServer), aListOfVmsWith(theVm));
 
 		assertThat(theServer, hasLoadPercentageOf(100.0d));
-		assertThat("the server should contain vm", theServer.contains(theVm));
+		assertThat("the server should contains vm", theServer.contains(theVm));
 	}
 
 	@Test 
@@ -42,7 +42,7 @@ public class ServerLoadBalancerTest {
 		balance(aListOfServersWith(theServer), aListOfVmsWith(theVm));
 
 		assertThat(theServer, hasLoadPercentageOf(10.0d));
-		assertThat("the server should contain vm", theServer.contains(theVm));
+		assertThat("the server should contains vm", theServer.contains(theVm));
 		
 	}
 	
@@ -54,10 +54,21 @@ public class ServerLoadBalancerTest {
 		balance(aListOfServersWith(theServer), aListOfVmsWith(firstVm, secondVm));
 
 		assertThat(theServer, hasAVmsCountOf(2));
-		assertThat("the server should contain first vm", theServer.contains(firstVm)); 
-		assertThat("the server should contain second vm", theServer.contains(secondVm)); 
+		assertThat("the server should contains first vm", theServer.contains(firstVm)); 
+		assertThat("the server should contains second vm", theServer.contains(secondVm)); 
 	}
 	
+	@Test
+	public void vmShouldBeBalancedOnLessLoadedServerFirst(){
+		Server moreLoadedServer = a(server().withCapacity(100).withCurrentLoad(50.0d));
+		Server lessLoadedServer = a(server().withCapacity(100).withCurrentLoad(45.0d));
+		Vm theVm = a(vm().withSize(10)); 
+		
+		balance(aListOfServersWith(moreLoadedServer, lessLoadedServer), aListOfVmsWith(theVm));
+		
+		assertThat("the server should contains the vm", lessLoadedServer.contains(theVm)); 
+		assertThat("the server should not contains the vm", moreLoadedServer.contains(theVm)); 
+	}
 
 	private void balance(Server[] servers, Vm[] vms) {
 		new ServerLoadBalancer().balance(servers, vms);
@@ -71,8 +82,8 @@ public class ServerLoadBalancerTest {
 		return new Vm[0];
 	}
 
-	private Server[] aListOfServersWith(Server server) {
-		return new Server[] { server };
+	private Server[] aListOfServersWith(Server... servers) {
+		return servers;
 	}
 
 	private <T> T a(Builder<T> builder) {
